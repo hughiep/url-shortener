@@ -58,3 +58,18 @@ Lie between the application and the database. The cache can store the short URLs
 >> Suggest: CloudFront, Akamai, Cloudflare, etc.
 
 - Use a load balancer to distribute the requests to multiple servers. This will reduce the load on the servers and improve the latency of redirection.
+
+## Handle 100M DAUs and 1B URLs
+
+Solutions:
+
+- Calculate size of each record.
+Calculation: short code (6 bytes) + original URL (200 bytes) + timestamp (8 bytes) + user id (4 bytes) + custom alias (100 bytes) = 318 bytes. Round up to 500 for additional metadata and analytics.
+
+For 1B URLs, the total size of the database would be 500 GB. We can use sharding to distribute the data across multiple servers.
+
+- What database should we use?
+
+Because read and write operations are not equal, write-heavy, we can split the database into two parts: one for read operations and one for write operations.
+
+For read operations, we can use a NoSQL database like Cassandra or MongoDB. For write operations, we can use a distributed cache like Redis or Memcached.
