@@ -18,7 +18,7 @@ export class ShortenerService {
 
   async shortenUrl(originalUrl: string, userId: string): Promise<string> {
     try {
-      const shortPath = this.generatorService.generateId(originalUrl);
+      const shortPath = await this.generatorService.generateId();
 
       const url = new this.urlModel({
         originalUrl,

@@ -2,13 +2,25 @@
  * Redis service
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 
 @Injectable()
 export class RedisService {
-  constructor(@Inject('REDIS') private readonly redisClient: Redis) {
-    console.log('RedisService constructor');
+  private redisClient: Redis;
+
+  constructor() {
+    this.redisClient = new Redis({
+      password: 'redis',
+    });
+
+    this.redisClient.on('error', (error) => {
+      console.error(error);
+    });
+
+    this.redisClient.on('connect', () => {
+      console.log('Connected to Redis');
+    });
   }
 
   async get(key: string): Promise<string> {
