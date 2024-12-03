@@ -2,7 +2,7 @@ URL Shortener
 
 # Deep Dive
 
-Focus on the most challenging and interesting parts of the system, ensuring our design meets all non-functional requirements, addressing edge cases, bottlenecks, and failure points.
+Focus on the most **challenging and interesting parts** of the system, ensuring our design meets all non-functional requirements, **addressing edge cases**, bottlenecks, and failure points.
 
 Example:
 
@@ -12,13 +12,14 @@ Example:
 Have a deep dive into the system and design the components in detail, challenges, and solutions.
 Hope you able to identify this places yourself and lead the discussion.
 
-## Ensure short urls are unique and short
+## Ensure shorterned urls are unique and short
 
 Solutions:
 
-1. Use a hash function to generate a unique hash for the given URL. The hash function should be fast and generate unique hashes for different URLs.
+1. Use a **hash function** to generate a unique hash for the given URL. The hash function should be fast and generate unique hashes for different URLs.
 
 Use some randomness to try to ensure that the generated hash is unique. This can be done by adding a random number to the URL before hashing it.
+Lead the discussion on how to generate a unique hash for the given URL. Discuss the pros and cons of using randomness and hash function to generate a unique hash.
 
 The simplest way is using Math.random() to generate a random number and append it to the URL before hashing it. The cons of this approach are that it is not guaranteed to generate unique hashes and it can be predictable.
 
@@ -28,7 +29,7 @@ Either using randomness or hash function, the generated hash would become input 
 
 **Problem**: The generated hash may not be unique. If two different URLs generate the same hash, the system will not be able to distinguish between them.
 
-2.Use a counter to generate a unique id and convert the id to a short string. The counter can be incremented for each new URL.
+2. Use a counter to generate a unique id and convert the id to a short string. The counter can be incremented for each new URL.
 
 [https://redis.io/glossary/storing-counters-in-redis/](https://redis.io/glossary/storing-counters-in-redis/)
 
@@ -36,7 +37,7 @@ Advantages: The counter ensures that the generated id is unique. The counter can
 
 Challenge: In distributed systems, maintaining a counter can be challenging. The counter needs to be updated atomically to ensure that it is unique.
 
-3.Use a combination of the above two methods. Generate a unique id and convert it to a short string using a hash function.
+3. Use a combination of the above two methods. Generate a unique id and convert it to a short string using a hash function.
 
 ## Handle redirection latency
 
