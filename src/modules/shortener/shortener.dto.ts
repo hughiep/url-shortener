@@ -1,6 +1,9 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 /**
  * DTO
  */
-export class ShortenUrlDto {
+export class CreateShortenUrlDto {
+  @ApiProperty()
   url: string;
 }
