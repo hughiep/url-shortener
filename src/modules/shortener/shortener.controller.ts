@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Inject,
   Param,
   Post,
   Redirect,
@@ -10,13 +11,18 @@ import {
 import { ShortenerService } from './shortener.service';
 import { CreateShortenUrlDto } from './shortener.dto';
 import { ApiResponse } from '@nestjs/swagger';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 /**
  * Shortener Controller
  */
 @Controller()
 export class ShortenerController {
-  constructor(private shortenerService: ShortenerService) {}
+  constructor(
+    private shortenerService: ShortenerService,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
+  ) {}
 
   @Get(':shortPath')
   @ApiResponse({
@@ -26,7 +32,13 @@ export class ShortenerController {
   })
   @Redirect(undefined, HttpStatus.FOUND)
   async redirectToOriginalUrl(@Param('shortPath') shortPath: string) {
+    const cachedUrl = await this.cacheService.get(shortPath);
+    if (cachedUrl) {
+      return { url: cachedUrl };
+    }
+
     const originalUrl = await this.shortenerService.getOriginalUrl(shortPath);
+    await this.cacheService.set(shortPath, originalUrl);
     return { url: originalUrl };
   }
 
