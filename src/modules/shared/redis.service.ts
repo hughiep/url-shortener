@@ -11,15 +11,15 @@ export class RedisService {
 
   constructor() {
     this.redisClient = new Redis({
-      password: 'redis',
+      password: process.env.REDIS_PASSWORD,
     });
 
     this.redisClient.on('error', (error) => {
-      console.error(error);
+      console.error('Error connecting to Redis:', error);
     });
 
-    this.redisClient.on('connect', () => {
-      console.log('Connected to Redis');
+    this.redisClient.on('ready', () => {
+      console.log('Redis is ready');
     });
   }
 
@@ -31,6 +31,10 @@ export class RedisService {
     this.redisClient.set(key, value);
   }
 
+  async delete(key: string): Promise<void> {
+    this.redisClient.del(key);
+  }
+
   /**
    * Counter
    */
@@ -40,9 +44,5 @@ export class RedisService {
 
   async decrement(key: string): Promise<number> {
     return this.redisClient.decr(key);
-  }
-
-  async delete(key: string): Promise<void> {
-    this.redisClient.del(key);
   }
 }

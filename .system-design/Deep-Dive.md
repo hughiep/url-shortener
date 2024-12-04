@@ -39,6 +39,10 @@ Challenge: In distributed systems, maintaining a counter can be challenging. The
 
 3. Use a combination of the above two methods. Generate a unique id and convert it to a short string using a hash function.
 
+The global counter can be used to generate a unique id and the hash function can be used to convert the id to a short string. The hash function should generate a fixed length hash for the given id.
+
+Cons: Redis scalability issue for global counter. The counter can be stored in a distributed cache to ensure that it is updated atomically. We can horizontally scale the the system with proper counter management.
+
 ## Handle redirection latency
 
 Solutions:

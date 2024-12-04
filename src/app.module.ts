@@ -1,11 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ShortenerModule } from './modules/shortener/shortener.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [ShortenerModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [ShortenerModule, ConfigModule.forRoot()],
 })
 export class AppModule {}
