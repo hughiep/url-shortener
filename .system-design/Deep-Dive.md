@@ -16,7 +16,7 @@ Hope you able to identify this places yourself and lead the discussion.
 
 Solutions:
 
-1. Use a **hash function** to generate a unique hash for the given URL. The hash function should be fast and generate unique hashes for different URLs.
+1. Use a **hash function** to generate a **unique hash for the given URL**. The hash function should be fast and generate unique hashes for different URLs.
 
 Use some randomness to try to ensure that the generated hash is unique. This can be done by adding a random number to the URL before hashing it.
 Lead the discussion on how to generate a unique hash for the given URL. Discuss the pros and cons of using randomness and hash function to generate a unique hash.
@@ -28,6 +28,8 @@ Using hash function to generate a fixed length hash. The hash function should ge
 Either using randomness or hash function, the generated hash would become input to base62 encoding and then cut to a fixed length.
 
 **Problem**: The generated hash may not be unique. If two different URLs generate the same hash, the system will not be able to distinguish between them.
+Increase the length of the hash to reduce the chance of collision. The longer the hash, the lower the chance of collision.
+But the longer the hash, the longer the shortened URL. The goal is to generate a short URL, so we need to balance the length of the hash and the length of the shortened URL.
 
 2. Use a counter to generate a unique id and convert the id to a short string. The counter can be incremented for each new URL.
 
@@ -35,13 +37,15 @@ Either using randomness or hash function, the generated hash would become input 
 
 Advantages: The counter ensures that the generated id is unique. The counter can be stored in a distributed cache to ensure that it is updated atomically. We can horizontally scale the the system with proper counter management.
 
-Challenge: In distributed systems, maintaining a counter can be challenging. The counter needs to be updated atomically to ensure that it is unique.
+Challenge: In distributed systems, maintaining a global counter can be challenging. The counter needs to be updated atomically to ensure that it is unique.
 
 3. Use a combination of the above two methods. Generate a unique id and convert it to a short string using a hash function.
 
 The global counter can be used to generate a unique id and the hash function can be used to convert the id to a short string. The hash function should generate a fixed length hash for the given id.
 
-Cons: Redis scalability issue for global counter. The counter can be stored in a distributed cache to ensure that it is updated atomically. We can horizontally scale the the system with proper counter management.
+Cons: Redis scalability issue for global counter.
+The counter can be stored in a distributed cache to ensure that it is updated atomically.
+We can horizontally scale the the system with proper counter management.
 
 ## Handle redirection latency
 
@@ -66,7 +70,11 @@ Lie between the application and the database. The cache can store the short URLs
 
 ## Handle 100M DAUs and 1B URLs
 
+![Scaling problem](./scaling.png)
+
 Solutions:
+
+### Database
 
 - Calculate size of each record.
 Calculation: short code (6 bytes) + original URL (200 bytes) + timestamp (8 bytes) + user id (4 bytes) + custom alias (100 bytes) = 318 bytes. Round up to 500 for additional metadata and analytics.
@@ -75,6 +83,10 @@ For 1B URLs, the total size of the database would be 500 GB. We can use sharding
 
 - What database should we use?
 
-Because read and write operations are not equal, write-heavy, we can split the database into two parts: one for read operations and one for write operations.
+Any database would work here. We offload the heavy-read traffic to the cache, so the database is not the bottleneck. We can use a SQL database like MySQL or a NoSQL database like Cassandra.
 
-For read operations, we can use a NoSQL database like Cassandra or MongoDB. For write operations, we can use a distributed cache like Redis or Memcached.
+Availability: We can use a master-slave replication to ensure high availability.
+
+### Server
+
+Because the system is read-heavy, we can use a api gateway to distribute the requests to multiple services (read & write). This helps maintain and scale the system, especially the read service.
