@@ -15,6 +15,7 @@ export class RedisService {
     });
 
     this.redisClient.on('error', (error) => {
+      console.log('Connecting to Redis', process.env.REDIS_PASSWORD);
       console.error('Error connecting to Redis:', error);
     });
 
