@@ -21,26 +21,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 export class ShortenerController {
   constructor(
     private shortenerService: ShortenerService,
-    @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
-
-  @Get(':shortPath')
-  @ApiResponse({
-    status: 302,
-    description: 'Redirect to the original URL',
-    schema: { example: { url: 'https://example.com' } },
-  })
-  @Redirect(undefined, HttpStatus.FOUND)
-  async redirectToOriginalUrl(@Param('shortPath') shortPath: string) {
-    const cachedUrl = await this.cacheService.get(shortPath);
-    if (cachedUrl) {
-      return { url: cachedUrl };
-    }
-
-    const originalUrl = await this.shortenerService.getOriginalUrl(shortPath);
-    await this.cacheService.set(shortPath, originalUrl);
-    return { url: originalUrl };
-  }
 
   // https://docs.nestjs.com/controllers#request-payloads
   @Post('/shorten')
