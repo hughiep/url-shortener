@@ -26,15 +26,17 @@ services:
     restart: always
     env_file:
       - ../write-service/.env
-    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    command:
+      - /bin/sh
+      - -c
+      # - https://docs.docker.com/reference/compose-file/interpolation/#:~:text=You%20can%20use%20a%20%24%24,t%20want%20processed%20by%20Compose.
+      # - Double dollars, so that the variable is not interpolated by Docker Compose
+      # - Surround by quotes, so that the shell does not split the password
+      # - The ${variable:?message} syntax causes shell to exit with a non-zero
+      #   code and print a message, when the variable is not set or empty
+      - redis-server --requirepass "$${REDIS_PASSWORD:?REDIS_PASSWORD variable is not set}"
     volumes:
       - redis-data:/root/redis
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 30s
-      retries: 5
-      start_period: 30s
 
   # Copyright Broadcom, Inc. All Rights Reserved.
   # SPDX-License-Identifier: APACHE-2.0
