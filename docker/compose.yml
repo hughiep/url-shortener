@@ -17,7 +17,6 @@ services:
       - "5001:5001"
     volumes:
       - ../write-service:/app
-
   redis:
     container_name: redis
     image: redis
@@ -112,3 +111,6 @@ volumes:
     driver: local
   redis-data:
     driver: local
+networks:
+  my-network:
+    driver: bridge
