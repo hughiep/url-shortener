@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { UrlSchema } from '../../schemas/url.schema';
+import { UrlSchema } from '../schemas/url.schema';
 
 // TODO: avoid magic strings
 export const urlShortenerProviders = [

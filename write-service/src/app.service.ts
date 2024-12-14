@@ -5,8 +5,8 @@
 
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { Url } from './url.interface';
-import { GeneratorService } from './generator.service';
+import { Url } from './shortener/url.interface';
+import { GeneratorService } from './shortener/generator.service';
 
 @Injectable()
 export class ShortenerService {
@@ -33,20 +33,20 @@ export class ShortenerService {
     }
   }
 
-  async getOriginalUrl(shortPath: string): Promise<string> {
-    const url = await this.urlModel.findOne({ shortPath }).exec();
+  // async getOriginalUrl(shortPath: string): Promise<string> {
+  //   const url = await this.urlModel.findOne({ shortPath }).exec();
 
-    if (!url) {
-      throw new HttpException(
-        `Url ${shortPath} not found`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+  //   if (!url) {
+  //     throw new HttpException(
+  //       `Url ${shortPath} not found`,
+  //       HttpStatus.NOT_FOUND,
+  //     );
+  //   }
 
-    if (url.expireAt && url.expireAt < new Date()) {
-      throw new HttpException(`Url ${shortPath} has expired`, HttpStatus.GONE);
-    }
+  //   if (url.expireAt && url.expireAt < new Date()) {
+  //     throw new HttpException(`Url ${shortPath} has expired`, HttpStatus.GONE);
+  //   }
 
-    return url.originalUrl;
-  }
+  //   return url.originalUrl;
+  // }
 }

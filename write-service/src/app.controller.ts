@@ -1,24 +1,10 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Inject,
-  Param,
-  Post,
-  Redirect,
-} from '@nestjs/common';
-import { ShortenerService } from './shortener.service';
-import { CreateShortenUrlDto } from './shortener.dto';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
-import { Cache } from 'cache-manager';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { CreateShortenUrlDto } from './shortener/shortener.dto';
+import { ShortenerService } from './app.service';
 
-/**
- * Shortener Controller
- */
 @Controller()
-export class ShortenerController {
+export class AppController {
   constructor(
     private shortenerService: ShortenerService,
   ) {}
