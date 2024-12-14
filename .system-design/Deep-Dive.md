@@ -90,3 +90,5 @@ Availability: We can use a master-slave replication to ensure high availability.
 ### Server
 
 Because the system is read-heavy, we can use a api gateway to distribute the requests to multiple services (read & write). This helps maintain and scale the system, especially the read service.
+
+*This is a nice little example of the CQRS pattern
